@@ -10,7 +10,9 @@ import { createWallet, persistWalletState, unshieldedToken } from './wallet';
 
 // Enable WebSocket for GraphQL subscriptions
 // @ts-expect-error Required for wallet sync
-globalThis.WebSocket = WebSocket;
+if (globalThis.WebSocket === undefined) {
+  globalThis.WebSocket = WebSocket;
+}
 
 // ─── Network configuration ─────────────────────────────────────────────────────
 

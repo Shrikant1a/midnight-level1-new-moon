@@ -21,7 +21,9 @@ import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
 // @ts-expect-error Required for wallet sync
-globalThis.WebSocket = WebSocket;
+if (globalThis.WebSocket === undefined) {
+  globalThis.WebSocket = WebSocket;
+}
 
 // Identifier under which this contract's private state is stored. The
 // hello-world contract has no witnesses, so its private state is empty ({}).
