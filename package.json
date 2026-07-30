@@ -6,7 +6,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "compile": "compact compile contracts/hello-world.compact contracts/managed/hello-world",
+    "compile": "wsl -d Ubuntu bash -l -c \"rm -rf ~/compact-temp && mkdir -p ~/compact-temp/contracts && cp '/mnt/s/New moon midnight/contracts/hello-world.compact' ~/compact-temp/contracts/ && cd ~/compact-temp && compact compile contracts/hello-world.compact contracts/managed/hello-world && rm -rf '/mnt/s/New moon midnight/contracts/managed' && cp -r contracts/managed '/mnt/s/New moon midnight/contracts/'\"",
     "build": "npx tsc --noEmit || true",
     "setup": "npx tsx src/setup.ts",
     "deploy": "npx tsx src/deploy.ts",
@@ -20,6 +20,7 @@
     "test:e2e": "tsx scripts/e2e-check.ts"
   },
   "dependencies": {
+    "@esbuild/linux-x64": "^0.28.1",
     "@midnight-ntwrk/compact-runtime": "0.16.0",
     "@midnight-ntwrk/midnight-js-contracts": "4.1.1",
     "@midnight-ntwrk/midnight-js-http-client-proof-provider": "4.1.1",
@@ -43,5 +44,10 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "keywords": ["midnight", "blockchain", "zero-knowledge", "privacy"]
+  "keywords": [
+    "midnight",
+    "blockchain",
+    "zero-knowledge",
+    "privacy"
+  ]
 }
