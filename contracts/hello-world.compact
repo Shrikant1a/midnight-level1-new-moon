@@ -4,9 +4,20 @@ import CompactStandardLibrary;
 
 // Public ledger state - visible on blockchain
 export ledger message: Opaque<"string">;
+export ledger secretHash: Bytes<32>;
 
 // Circuit to store a message on the blockchain
-// The message will be publicly visible
 export circuit storeMessage(customMessage: Opaque<"string">): [] {
     message = disclose(customMessage);
+}
+
+// Circuit to set the secret hash on the ledger
+export circuit setSecretHash(newHash: Bytes<32>): [] {
+    secretHash = disclose(newHash);
+}
+
+// Circuit to verify the secret passcode without disclosing it
+export circuit verifySecret(secret: Bytes<32>): [] {
+    // Assert that the hash of the secret is equal to the expected secretHash
+    assert(persistentHash<Bytes<32> >(secret) == secretHash, "invalid secret");
 }
