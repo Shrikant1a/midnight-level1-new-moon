@@ -145,6 +145,35 @@ export default function App() {
     setStatus('Disconnected');
   };
 
+  const handleDeployContract = async () => {
+    setLoading(true);
+    setError('');
+    setStatus('Preparing contract deployment...');
+    try {
+      const providers = await getContractProviders();
+      
+      setStatus('Deploying contract on Preprod network (generating ZK proof)...');
+      const deployed = await deployContract(providers, {
+        compiledContract: compiledContract as any,
+        args: [],
+        privateStateId: 'helloWorldPrivateState',
+        initialPrivateState: {},
+      });
+      
+      const newAddress = deployed.deployTxData.public.contractAddress;
+      setContractAddress(newAddress);
+      localStorage.setItem('contractAddress', newAddress);
+      
+      setStatus(`Contract successfully deployed on Preprod! Address: ${newAddress}`);
+      await refreshContractState();
+    } catch (err: any) {
+      setError(err.message || String(err));
+      setStatus('');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Helper to build contract providers using the connected wallet API
   const getContractProviders = async () => {
     if (!wallet) throw new Error('Wallet not connected');
@@ -367,9 +396,18 @@ export default function App() {
                 <span className="value hash-text" title={ledgerSecretHash}>{ledgerSecretHash || 'Loading...'}</span>
               </div>
             </div>
-            <button className="btn btn-secondary refresh-btn" onClick={refreshContractState}>
-              Refresh State
-            </button>
+            <div className="button-group" style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-secondary refresh-btn" onClick={refreshContractState}>
+                Refresh State
+              </button>
+              <button 
+                className="btn btn-primary deploy-btn" 
+                onClick={handleDeployContract}
+                disabled={loading || !wallet}
+              >
+                Deploy New Contract
+              </button>
+            </div>
           </div>
         </div>
 
