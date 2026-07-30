@@ -1,188 +1,72 @@
-# midnight-app
+# Midnight App: Hello World & Privacy-First Escrow 🌙
 
-A Midnight Network smart contract scaffolded with create-mn-app.
+Welcome to the New Moon Phase of the Midnight developer journey! This repository contains a compiled and deployed privacy-preserving smart contract on the official **Midnight Preview Network**.
 
-## Quick start
+- **Contract Address:** `a58cea2bc0774c5199569acde83f7acd024e2bedf482205d7ffc13aa334b5827`
+- **Network:** `preview`
+- **Deployer Wallet Address:** `mn_addr_preview1qv08enwu6lyrslfxy8aez4u6as6dnf0jqyaxhlkmc792wvcdyucqjjqtmr`
 
-Requirements: Node 22, Docker (with Compose v2), and the Compact compiler at the version pinned in `.compact-version` at the create-mn-app repo root (the version this project was scaffolded against).
+---
 
+## 🏗️ Setup & Verification Instructions
+
+To run, compile, deploy, and test this project, you must use a hybrid Windows/WSL2 configuration. Since compiling on Windows mounted drives mounted inside WSL (`/mnt/s/...`) causes permission/chmod errors, and Node on Windows can suffer from WebSocket connection drop/Normal Closure (code 1000) during transaction submission, we use the following workflow:
+
+### Prerequisites
+- Node.js (version 22+)
+- Docker (with Compose v2+)
+- Midnight `compact` compiler (version 0.31.1) and CLI (version 0.5.1) installed natively inside WSL Ubuntu.
+- Node.js and npm installed natively inside WSL Ubuntu (`sudo apt-get install -y nodejs npm`).
+
+### 1. Compile the Compact Smart Contract
+The compiler runs inside WSL. The workspace script copies the contract files locally into WSL (`~/compact-temp`), compiles them natively, and copies the resulting `managed/` files back to the workspace.
+
+To compile, run:
 ```bash
-npm install
-npm run setup
+npm run compile
+```
+
+### 2. Run the Local Devnet (Optional)
+If you want to test changes locally before deploying to Preview:
+```bash
+# Start local node, indexer, and proof-server
+npm run proof-server:start
+
+# Run E2E checks locally
 npm run test:e2e
 ```
 
-`npm run setup` runs end-to-end with no prompts:
-
-1. `docker compose up -d --wait` — starts a local Midnight devnet (node, indexer, proof-server) and blocks until all three pass their healthchecks.
-2. `npm run compile` — compiles `contracts/hello-world.compact` to `contracts/managed/hello-world/`.
-3. `npm run deploy` — derives the genesis-seed wallet (NIGHT pre-minted), registers UTXOs for DUST generation, deploys the contract, writes `.midnight-state.json`.
-
-`npm run test:e2e` reconnects to the deployed contract and reads its ledger state. Exits 0 if the contract is live and indexable.
-
-## Local devnet
-
-The project ships its own devnet via `docker-compose.yml`:
-
-| Service        | Port | Purpose                                         |
-| -------------- | ---- | ----------------------------------------------- |
-| `node`         | 9944 | Midnight node, `dev` chain preset               |
-| `indexer`      | 8088 | GraphQL indexer for chain state                 |
-| `proof-server` | 6300 | Generates ZK proofs for contract transactions   |
-
-State lives in container-managed volumes. Tear everything down with:
-
+### 3. Deploy to the Public Preview Network
+To deploy to the public Preview network:
 ```bash
-docker compose down -v
+# Deploys contract and automatically handles DUST token generation / registration
+wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run deploy -- --network preview"
 ```
 
-That removes all containers, networks, and volumes. The next `npm run setup` starts from a clean slate.
-
-## ⚠️ LOCAL DEVNET ONLY
-
-The deploy script uses a well-known genesis seed (`0000…0001`) so the
-pre-minted NIGHT in the `dev` chain preset is immediately available. **Do
-not use this seed against Preprod, mainnet, or any environment that
-handles real value** — anyone running this devnet has full access to
-funds at this seed.
-
-## Networks
-
-This DApp supports three networks:
-
-| Network | When to use | Default? |
-|---|---|---|
-| `undeployed` | Local devnet bundled in `docker-compose.yml`. Genesis seed is hardcoded; no funding needed. | yes |
-| `preview` | Public preview testnet. Faucet at `https://midnight-tmnight-preview.nethermind.dev`. |  |
-| `preprod` | Public preprod testnet. Faucet at `https://midnight-tmnight-preprod.nethermind.dev`. |  |
-
-The active network is **sticky**: whichever network you last interacted
-with stays active until you switch. Any command run with `--network <name>`
-also sets that network active for subsequent commands. The default on a
-fresh project is `undeployed` (local devnet).
-
-```sh
-npm run setup -- --network preview   # runs on preview AND makes it active
-npm run cli                          # still uses preview
-npm run check-balance                # still uses preview
-```
-
-You can also switch without running anything else:
-
-```sh
-npm run network preview         # active network is now preview
-npm run network                 # prints current active network
-npm run network undeployed      # switch back to local devnet
-```
-
-### How wallets work across networks
-
-- `undeployed` uses a hardcoded genesis seed. Local devnet pre-funds it.
-- `preview` and `preprod` generate a fresh seed on first use and store it
-  in `.midnight-state.json` (gitignored). The seed survives switching
-  networks — switch back later and your funded wallet returns.
-- **Back up your seed** if you fund a public-network wallet you care
-  about. Open `.midnight-state.json` and copy the relevant
-  `wallets.<network>.seed` value to a safe place.
-
-### Funding a public-network wallet
-
-On the first run with `--network preview` (or `preprod`):
-
-1. `setup` will print your wallet address and the faucet URL.
-2. Open the faucet URL, paste the address, request tNIGHT.
-3. `setup` polls the wallet balance every 10 s and continues automatically
-   once funds arrive.
-4. The default poll budget is 10 minutes. Override with
-   `MIDNIGHT_FAUCET_TIMEOUT_MS=1800000` (30 min) for unattended runs.
-
-If the faucet is slow or the script times out, your seed is preserved.
-Re-run `npm run setup -- --network preview` once the funds land.
-
-### Environment overrides
-
-These env vars override the active network's config (no per-network
-suffix — they apply to whichever network is active for the run):
-
-| Variable | Effect |
-|---|---|
-| `MIDNIGHT_WALLET_SEED` | Use this seed instead of generating/persisting one. Useful for CI with a pre-funded wallet. |
-| `MIDNIGHT_INDEXER_URL` | Override the indexer GraphQL URL. |
-| `MIDNIGHT_INDEXER_WS_URL` | Override the indexer WS URL. |
-| `MIDNIGHT_NODE_URL` | Override the node RPC URL. |
-| `MIDNIGHT_FAUCET_URL` | Override the faucet URL printed during setup. |
-| `MIDNIGHT_PROOF_SERVER_URL` | Override the proof server URL — set to a public proof server (e.g. `https://lace-proof-pub.preview.midnight.network`) to skip running one locally. |
-| `MIDNIGHT_FAUCET_TIMEOUT_MS` | Faucet poll budget in milliseconds (default 600000 = 10 min). |
-
-By default all networks use the **local** proof server. Public proof
-servers exist (see the env override above) but the local default keeps
-your witness data on your machine and avoids depending on a remote
-service for the deploy hot path.
-
-### Switching back to local devnet
-
-```sh
-npm run network undeployed     # or: npm run setup -- --network undeployed
-```
-
-Your preview/preprod wallet seeds and deploy addresses stay in
-`.midnight-state.json`. Switch back later, and they're still there.
-
-### Wallet sync cache
-
-After each `deploy`, `cli`, or `check-balance` run, the scripts serialize the
-wallet's synced state to `.midnight-wallet-state/<network>/` (gitignored).
-The next run on the same network restores from that snapshot and only catches
-up to the latest block instead of replaying from genesis — meaningful on
-`preview` / `preprod` where a from-seed sync takes minutes.
-
-If the cache is stale or corrupt (e.g. after an SDK upgrade with an
-incompatible state format) the wallet falls back to a fresh from-seed sync
-with a one-line warning. `npm run clean` removes the cache along with other
-generated state.
-
-## Available scripts
-
-| Script                  | Description                                                    |
-| ----------------------- | -------------------------------------------------------------- |
-| `npm run setup`         | One-shot: start devnet, compile, deploy.                       |
-| `npm run compile`       | Compile the Compact contract.                                  |
-| `npm run deploy`        | Deploy the compiled contract (requires devnet up + compiled).  |
-| `npm run cli`           | Interactive CLI to call circuits on the deployed contract.     |
-| `npm run check-balance` | Print the genesis-seed wallet's NIGHT and DUST balances.       |
-| `npm run test:e2e`      | Smoke + read-back check against the deployed contract.         |
-| `npm run clean`         | Remove `contracts/managed/`, `.midnight-state.json`, and `.midnight-wallet-state/`. |
-| `npm run proof-server:start` / `:stop` | Compose lifecycle for just the proof-server service. |
-
-## Project structure
-
-```
-midnight-app/
-├── contracts/
-│   └── hello-world.compact     # Compact source
-├── scripts/
-│   └── e2e-check.ts            # smoke + read-back
-├── src/
-│   ├── network.ts              # network selection + state file management
-│   ├── wallet.ts               # wallet construction + sync-state cache
-│   ├── setup.ts                # orchestrator for `npm run setup`
-│   ├── deploy.ts               # deploy the contract
-│   ├── cli.ts                  # interact with deployed contract
-│   └── check-balance.ts        # NIGHT / DUST balance
-├── docker-compose.yml          # node + indexer + proof-server
-├── .midnight-state.json        # written by deploy (gitignored)
-├── .midnight-wallet-state/     # serialized sync state per network (gitignored)
-├── package.json
-└── tsconfig.json
-```
-
-## Compact compiler version
-
-`.compact-version` at the create-mn-app repo root pinned the compiler
-version this project was scaffolded against. To upgrade your local
-compiler to that version:
-
+### 4. Run End-to-End Tests
+To verify that the deployed contract is indexable and can be called on the Preview network:
 ```bash
-compact update <version>
-compact use <version>
+wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run test:e2e -- --network preview"
 ```
+
+---
+
+## 🔒 Public State vs. Private Witness in Midnight
+
+Midnight Network separates state into two distinct spaces: **Public Ledger State** and **Private Witness State** (managed by the Compact language).
+
+1. **Public State:**
+   - **What it is:** The global, on-chain state stored directly on the ledger.
+   - **Access:** Visible to everyone on the network and verified by all consensus nodes.
+   - **Use Case:** Used for contract metadata, public balances, progress counters, or flags that need to be globally agreed upon.
+
+2. **Private Witness State:**
+   - **What it is:** State and inputs kept locally on the user's machine (client-side).
+   - **Access:** Only readable by the participant (or authorized parties) and never broadcast to the network.
+   - **How it works:** When a transaction is made, the local **Proof Server** executes the contract logic on the private witness state and generates a Zero-Knowledge Proof (ZKP). Only the ZKP and public state updates are sent to the blockchain. Consensus nodes verify the proof to ensure the state transition is valid, without learning the private witness values.
+
+---
+
+## 💡 Initial Product Idea: Trustlance Escrow 🤝
+
+**Trustlance Escrow** is a privacy-preserving milestone-based escrow smart contract for decentralized freelance engagements. Rather than publishing contract parameters, payout values, and specific milestone requirements on-chain, Trustlance hides these details in the private witness state. Freelancers and clients lock milestone definitions and payment amounts locally. When a milestone is completed, the freelancer generates a zero-knowledge proof proving completion of the milestone according to the pre-agreed terms, which unlocks the payment. On-chain, only cryptographic commitment hashes and progress status flags are visible, protecting the financial privacy and intellectual property of both parties while keeping the escrow agreement mathematically secure.
