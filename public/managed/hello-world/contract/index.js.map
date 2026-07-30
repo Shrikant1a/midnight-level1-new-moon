@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../../",
+  "sources": ["contracts/hello-world.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;MASA,AAAA,YAEC;;;;;cAF2B,eAA+B;;;;;;;;;;;yCAA/B,eAA+B;;;;;;;;;8CAA/B,eAA+B;;;OAE1D;MAGD,AAAA,aAEC;;;;;cAF4B,SAAkB;;;;;;;;;;;;;;;;;;yCAAlB,SAAkB;;;;;;;;;+CAAlB,SAAkB;;;OAE9C;MAGD,AAAA,YAGC;;;;;cAH2B,QAAiB;;;;;;;;;;;;;;;;;;yCAAjB,QAAiB;;;;;;;;;8CAAjB,QAAiB;;;OAG5C;;;;;;;;;;;;GACA;EAvBD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAKA;;;;;;;;;yEAAwC;IACxC;;;;;;;;;yEAAoC;;;;;;;GAiBnC;ECvBD,AAAA,kBAAA;oEAAA;;;EDSA,AAAA,eAEC,4BAF2B,eAA+B;IACvD;;;;;;;2HAAmB,eAAa;;yEAAzB;;GACV;EAGD,AAAA,gBAEC,4BAF4B,SAAkB;IAC3C;;;;;;;2HAAsB,SAAO;;yEAAnB;;GACb;EAGD,AAAA,eAGC,4BAH2B,QAAiB;iEAEP,QAAM;kEAAK;;;;;;;;;;;uIAAU;;;GAC1D;;;;;;;;;;;;;;;;;;;;IAjBD;qCAAA;;;;;;;;;;;0GAAwC;KAAA;IACxC;qCAAA;;;;;;;;;;;0GAAoC;KAAA;;;;;;;;;;"
+}
