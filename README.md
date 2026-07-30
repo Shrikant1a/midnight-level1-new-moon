@@ -8,46 +8,52 @@ Welcome to the New Moon Phase of the Midnight developer journey! This repository
 
 ---
 
-## 🏗️ Setup & Verification Instructions
+## 🏗️ Step-by-Step Running Instructions
 
-To run, compile, deploy, and test this project, you must use a hybrid Windows/WSL2 configuration. Since compiling on Windows mounted drives mounted inside WSL (`/mnt/s/...`) causes permission/chmod errors, and Node on Windows can suffer from WebSocket connection drop/Normal Closure (code 1000) during transaction submission, we use the following workflow:
+Follow these commands in sequence to set up, compile, deploy, and interact with the contract on the public **Preview** network:
 
 ### Prerequisites
 - Node.js (version 22+)
-- Docker (with Compose v2+)
-- Midnight `compact` compiler (version 0.31.1) and CLI (version 0.5.1) installed natively inside WSL Ubuntu.
-- Node.js and npm installed natively inside WSL Ubuntu (`sudo apt-get install -y nodejs npm`).
+- Docker (with Compose v2+ for local development)
+- Midnight `compact` compiler (version 0.31.1) and CLI (version 0.5.1) installed inside WSL Ubuntu.
+- Node.js and npm installed inside WSL Ubuntu (`sudo apt-get install -y nodejs npm`).
 
-### 1. Compile the Compact Smart Contract
-The compiler runs inside WSL. The workspace script copies the contract files locally into WSL (`~/compact-temp`), compiles them natively, and copies the resulting `managed/` files back to the workspace.
+### 1. Install Dependencies
+Run this on your host machine (Windows PowerShell) to install Node packages:
+```bash
+npm install
+```
 
-To compile, run:
+### 2. Compile the Smart Contract
+Compiles the `hello-world.compact` contract to its WebAssembly and TypeScript definitions (runs natively in WSL to avoid Windows file permission errors):
 ```bash
 npm run compile
 ```
 
-### 2. Run the Local Devnet (Optional)
-If you want to test changes locally before deploying to Preview:
+### 3. Check Wallet Balance
+Check the `tNIGHT` and `tDUST` balances of the Preview address:
 ```bash
-# Start local node, indexer, and proof-server
-npm run proof-server:start
-
-# Run E2E checks locally
-npm run test:e2e
+npx tsx src/check-balance.ts --network preview
 ```
 
-### 3. Deploy to the Public Preview Network
-To deploy to the public Preview network:
+### 4. Deploy the Contract
+Deploy the contract to the Preview network. This generates and registers DUST tokens, generates zero-knowledge proofs, and deploys the contract (runs natively in WSL to avoid Windows socket disconnects):
 ```bash
-# Deploys contract and automatically handles DUST token generation / registration
 wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run deploy -- --network preview"
 ```
 
-### 4. Run End-to-End Tests
-To verify that the deployed contract is indexable and can be called on the Preview network:
+### 5. Run Verification Tests
+Verify the deployment with E2E smoke tests on the Preview network (runs in WSL):
 ```bash
 wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run test:e2e -- --network preview"
 ```
+
+### 6. Interact using the CLI
+Run the interactive console menu to read/store values on the deployed contract:
+```bash
+npx tsx src/cli.ts --network preview
+```
+*(Note: If you see transient `Wallet.Sync` error messages while idle in the CLI, these are normal keepalive disconnections from the public nodes. You can type any choice and press Enter to automatically reconnect.)*
 
 ---
 
