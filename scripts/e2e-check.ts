@@ -18,9 +18,8 @@ import { resolveNetwork, getOrCreateSeed, getDeployment } from '../src/network';
 import { createWallet, persistWalletState } from '../src/wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
-// @ts-expect-error wallet sync requires WebSocket
 if (globalThis.WebSocket === undefined) {
-  globalThis.WebSocket = WebSocket;
+  (globalThis as any).WebSocket = WebSocket;
 }
 
 // Must match the privateStateId used at deploy time (witness-free → empty state).

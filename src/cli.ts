@@ -19,9 +19,7 @@ import { resolveNetwork, getOrCreateSeed, getDeployment } from './network';
 import { createWallet, persistWalletState, unshieldedToken, type WalletContext } from './wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
-// Enable WebSocket for GraphQL subscriptions
-// @ts-expect-error Required for wallet sync
-globalThis.WebSocket = WebSocket;
+(globalThis as any).WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time so the CLI reconnects to
 // the same private state. The hello-world contract has no witnesses (empty state).

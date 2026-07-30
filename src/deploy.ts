@@ -20,9 +20,8 @@ import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-pri
 import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
-// @ts-expect-error Required for wallet sync
 if (globalThis.WebSocket === undefined) {
-  globalThis.WebSocket = WebSocket;
+  (globalThis as any).WebSocket = WebSocket;
 }
 
 // Identifier under which this contract's private state is stored. The

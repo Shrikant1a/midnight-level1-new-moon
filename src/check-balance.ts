@@ -8,10 +8,8 @@ import { resolveNetwork, getOrCreateSeed } from './network';
 // unshieldedToken is re-exported from ./wallet (originally @midnight-ntwrk/midnight-js-protocol/ledger).
 import { createWallet, persistWalletState, unshieldedToken } from './wallet';
 
-// Enable WebSocket for GraphQL subscriptions
-// @ts-expect-error Required for wallet sync
 if (globalThis.WebSocket === undefined) {
-  globalThis.WebSocket = WebSocket;
+  (globalThis as any).WebSocket = WebSocket;
 }
 
 // ─── Network configuration ─────────────────────────────────────────────────────
