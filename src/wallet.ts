@@ -113,7 +113,10 @@ export async function createWallet(opts: CreateWalletOptions): Promise<WalletCon
     provingServerUrl: new URL(opts.networkConfig.proofServer),
     relayURL: new URL(opts.networkConfig.node.replace(/^http/, 'ws')),
     txHistoryStorage: new NoOpTransactionHistoryStorage(),
-    costParameters: { additionalFeeOverhead: 300_000_000_000_000n, feeBlocksMargin: 5 },
+    costParameters: {
+      additionalFeeOverhead: opts.network === 'undeployed' ? 300_000_000_000_000n : 1_000n,
+      feeBlocksMargin: 5
+    },
   };
 
   const wallet = await WalletFacade.init({
