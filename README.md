@@ -55,6 +55,24 @@ npx tsx src/cli.ts --network preview
 ```
 *(Note: If you see transient `Wallet.Sync` error messages while idle in the CLI, these are normal keepalive disconnections from the public nodes. You can type any choice and press Enter to automatically reconnect.)*
 
+### 7. Run the React Frontend DApp (Level 2)
+Start the local development server for the DApp interface:
+```bash
+npm run dev
+```
+Open **`http://localhost:5173`** in your web browser.
+
+### 8. Testing the DApp in the Browser
+1. Install the **Lace Beta** browser extension.
+2. In the Lace extension settings, switch the active network to **Preprod**.
+3. Create/restore a wallet and request testnet tokens from the official **Preprod Faucet** (`https://faucet.preprod.midnight.network`).
+4. Click **Connect Lace Wallet** in the DApp.
+5. Use the user interface to:
+   - **Deploy New Contract:** Click "Deploy New Contract" to publish a fresh contract instance directly via Lace.
+   - **Store Public Message:** Enter a message and call `storeMessage` on-chain.
+   - **Configure ZK Secret Passcode:** Save the SHA-256 hash of a passcode on-chain.
+   - **Prove Passcode Knowledge (ZK Verification):** Enter a passcode. The DApp will execute the ZK circuit client-side, generate a proof of knowledge, and verify it on-chain without revealing the passcode!
+
 ---
 
 ## 🔒 Public State vs. Private Witness in Midnight
