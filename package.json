@@ -6,7 +6,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "compile": "wsl -d Ubuntu bash -l -c \"rm -rf ~/compact-temp && mkdir -p ~/compact-temp/contracts && cp '/mnt/s/New moon midnight/contracts/hello-world.compact' ~/compact-temp/contracts/ && cd ~/compact-temp && compact compile contracts/hello-world.compact contracts/managed/hello-world && rm -rf '/mnt/s/New moon midnight/contracts/managed' && cp -r contracts/managed '/mnt/s/New moon midnight/contracts/' && rm -rf '/mnt/s/New moon midnight/public/managed' && mkdir -p '/mnt/s/New moon midnight/public/managed' && cp -r contracts/managed/hello-world '/mnt/s/New moon midnight/public/managed/'\"",
+    "compile": "wsl -d Ubuntu bash -l -c \"rm -rf ~/compact-temp && mkdir -p ~/compact-temp/contracts && cp '/mnt/s/midnight-level1-new-moon/contracts/hello-world.compact' ~/compact-temp/contracts/ && cd ~/compact-temp && compact compile contracts/hello-world.compact contracts/managed/hello-world && rm -rf '/mnt/s/midnight-level1-new-moon/contracts/managed' && cp -r contracts/managed '/mnt/s/midnight-level1-new-moon/contracts/' && rm -rf '/mnt/s/midnight-level1-new-moon/public/managed' && mkdir -p '/mnt/s/midnight-level1-new-moon/public/managed' && cp -r contracts/managed/hello-world '/mnt/s/midnight-level1-new-moon/public/managed/'\"",
     "build": "npx tsc --noEmit || true",
     "setup": "npx tsx src/setup.ts",
     "deploy": "npx tsx src/deploy.ts",
@@ -41,7 +41,7 @@
     "ws": "^8.21.1"
   },
   "optionalDependencies": {
-    "@esbuild/linux-x64": "^0.28.1"
+    "@esbuild/linux-x64": "^0.28.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

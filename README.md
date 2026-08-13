@@ -39,13 +39,13 @@ npx tsx src/check-balance.ts --network preview
 ### 4. Deploy the Contract
 Deploy the contract to the Preview network. This generates and registers DUST tokens, generates zero-knowledge proofs, and deploys the contract (runs natively in WSL to avoid Windows socket disconnects):
 ```bash
-wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run deploy -- --network preview"
+wsl -d Ubuntu bash -c "cd '/mnt/s/midnight-level1-new-moon' && npm run deploy -- --network preview"
 ```
 
 ### 5. Run Verification Tests
 Verify the deployment with E2E smoke tests on the Preview network (runs in WSL):
 ```bash
-wsl -d Ubuntu bash -c "cd '/mnt/s/New moon midnight' && npm run test:e2e -- --network preview"
+wsl -d Ubuntu bash -c "cd '/mnt/s/midnight-level1-new-moon' && npm run test:e2e -- --network preview"
 ```
 
 ### 6. Interact using the CLI
