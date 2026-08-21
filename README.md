@@ -2,9 +2,9 @@
 
 Welcome to the New Moon Phase of the Midnight developer journey! This repository contains a compiled and deployed privacy-preserving smart contract on the official **Midnight Preview Network**.
 
-- **Contract Address:** `a58cea2bc0774c5199569acde83f7acd024e2bedf482205d7ffc13aa334b5827`
+- **Contract Address:** `4485a941217623d665a2f45186804be9e8f44469517b075c8aab383b10a8346d`
 - **Network:** `preview`
-- **Deployer Wallet Address:** `mn_addr_preview1qv08enwu6lyrslfxy8aez4u6as6dnf0jqyaxhlkmc792wvcdyucqjjqtmr`
+- **Deployer Wallet Address:** `mn_addr_preview15paaal7fkkhvm7vsyxtde29c02afaun4966kfqyuy2edpp956mwqe7vhkj`
 
 ---
 
