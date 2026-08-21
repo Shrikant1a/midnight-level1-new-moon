@@ -19,6 +19,7 @@ import { resolveNetwork, getOrCreateSeed, getDeployment } from './network';
 import { createWallet, persistWalletState, unshieldedToken, type WalletContext } from './wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
+// Override native Node 22 WebSocket with the 'ws' package to prevent connection drops on public networks
 (globalThis as any).WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time so the CLI reconnects to

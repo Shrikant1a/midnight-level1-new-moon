@@ -18,9 +18,8 @@ import { resolveNetwork, getOrCreateSeed, getDeployment } from '../src/network';
 import { createWallet, persistWalletState } from '../src/wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
 
-if (globalThis.WebSocket === undefined) {
-  (globalThis as any).WebSocket = WebSocket;
-}
+// Override native Node 22 WebSocket with the 'ws' package to prevent connection drops on public networks
+(globalThis as any).WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time (witness-free → empty state).
 const PRIVATE_STATE_ID = 'helloWorldPrivateState';
