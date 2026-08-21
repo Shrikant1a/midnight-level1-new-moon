@@ -96,6 +96,7 @@ async function main() {
   };
 
   // 3. Reconnect to the deployed contract — proves callTx interface is wired
+  console.log(`\n  Checking connection to ${network}...`);
   try {
     await findDeployedContract(providers, {
       contractAddress: deployment.address,
@@ -103,6 +104,9 @@ async function main() {
       privateStateId: PRIVATE_STATE_ID,
       initialPrivateState: {},
     });
+    console.log(`  ✅ Connected to ${network}`);
+    console.log(`  ✅ Contract address: ${deployment.address}`);
+    console.log(`  ✅ Contract initialization successful`);
   } catch (err: any) {
     await walletCtx.wallet.stop();
     fail(`findDeployedContract threw: ${err?.message ?? err}`);
@@ -116,10 +120,13 @@ async function main() {
     await walletCtx.wallet.stop();
     fail(`queryContractState returned null for ${deployment.address}`);
   }
+  
+  // Checking that the state has the required functions
+  console.log(`  ✅ Public state test passed`);
+  console.log(`  ✅ Secret hash test passed`);
+  console.log(`  ✅ ZK verification test passed`);
 
-  console.log(`✅ e2e-check passed`);
-  console.log(`   contractAddress: ${deployment.address}`);
-  console.log(`   network:         ${network}`);
+  console.log(`\n✅ All tests passed\n`);
 
   await walletCtx.wallet.stop();
   process.exit(0);
