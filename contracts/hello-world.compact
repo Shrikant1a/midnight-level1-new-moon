@@ -2,21 +2,36 @@ pragma language_version >= 0.23;
 
 import CompactStandardLibrary;
 
-// Public ledger state - visible on blockchain
+// ============================================================================
+// Trustlance Escrow (Level 1 Concept)
+// ============================================================================
+// Public ledger state - visible on the Midnight blockchain to all nodes.
+// These variables represent the public state of the escrow contract.
 export ledger message: Opaque<"string">;
 export ledger secretHash: Bytes<32>;
 
 // Circuit to store a message on the blockchain
+// The 'customMessage' is passed as a private input (witness) initially.
+// We use the disclose() function to explicitly move this data from the 
+// private witness state to the public ledger state.
 export circuit storeMessage(customMessage: Opaque<"string">): [] {
     message = disclose(customMessage);
 }
 
 // Circuit to set the secret hash on the ledger
+// We use disclose() to make the hash public. The actual secret is NEVER disclosed.
 export circuit setSecretHash(newHash: Bytes<32>): [] {
     secretHash = disclose(newHash);
 }
 
 // Circuit to verify the secret passcode without disclosing it
+// This is the core of the privacy-first escrow: 
+// 1. The 'secret' is kept in the user's local private witness.
+// 2. Private inputs are not exposed because they are processed locally by the Proof Server.
+// 3. The ZK proof mathematically verifies the condition (hash(secret) == secretHash) 
+//    and only the proof is sent to the network.
+// 4. The network verifies the ZK proof, proving the user knows the secret 
+//    without ever revealing the secret itself on the ledger.
 export circuit verifySecret(secret: Bytes<32>): [] {
     // Assert that the hash of the secret is equal to the expected secretHash
     assert(persistentHash<Bytes<32> >(secret) == secretHash, "invalid secret");
