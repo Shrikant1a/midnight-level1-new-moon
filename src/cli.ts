@@ -1,6 +1,7 @@
 /**
  * CLI for interacting with midnight-app contract
  */
+import './setup-ws';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 import * as fs from 'node:fs';
@@ -18,9 +19,6 @@ import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config
 import { resolveNetwork, getOrCreateSeed, getDeployment } from './network';
 import { createWallet, persistWalletState, unshieldedToken, type WalletContext } from './wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
-
-// Override native Node 22 WebSocket with the 'ws' package to prevent connection drops on public networks
-(globalThis as any).WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time so the CLI reconnects to
 // the same private state. The hello-world contract has no witnesses (empty state).

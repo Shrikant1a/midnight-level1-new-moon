@@ -4,12 +4,10 @@
 import { WebSocket } from 'ws';
 
 // Midnight SDK imports
+import './setup-ws';
 import { resolveNetwork, getOrCreateSeed } from './network';
 // unshieldedToken is re-exported from ./wallet (originally @midnight-ntwrk/midnight-js-protocol/ledger).
 import { createWallet, persistWalletState, unshieldedToken } from './wallet';
-
-// Override native Node 22 WebSocket with the 'ws' package to prevent connection drops on public networks
-(globalThis as any).WebSocket = WebSocket;
 
 // ─── Network configuration ─────────────────────────────────────────────────────
 

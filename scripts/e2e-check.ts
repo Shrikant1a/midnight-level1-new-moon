@@ -4,6 +4,7 @@
  * Reconnects to the deployed contract, reads its ledger state, and exits 0
  * on success. Used by `npm run test:e2e` and by the project's CI workflows.
  */
+import '../src/setup-ws';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -17,9 +18,6 @@ import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config
 import { resolveNetwork, getOrCreateSeed, getDeployment } from '../src/network';
 import { createWallet, persistWalletState } from '../src/wallet';
 import { CompiledContract } from '@midnight-ntwrk/midnight-js-protocol/compact-js';
-
-// Override native Node 22 WebSocket with the 'ws' package to prevent connection drops on public networks
-(globalThis as any).WebSocket = WebSocket;
 
 // Must match the privateStateId used at deploy time (witness-free → empty state).
 const PRIVATE_STATE_ID = 'helloWorldPrivateState';
