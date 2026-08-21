@@ -219,17 +219,27 @@ async function main() {
   );
   if (unregisteredUtxos.length > 0) {
     console.log(`  Registering ${unregisteredUtxos.length} NIGHT UTXOs for DUST generation...`);
-    // The signDustRegistration callback (3rd arg) already produces a recipe
-    // with N signatures matching N inputs. Do NOT call signRecipe again — that
-    // would double-sign and the chain rejects with InputsSignaturesLengthMismatch
-    // (Custom error 192). Matches upstream example-counter and example-bboard.
-    const recipe = await walletCtx.wallet.registerNightUtxosForDustGeneration(
-      unregisteredUtxos,
-      walletCtx.unshieldedKeystore.getPublicKey(),
-      (payload) => walletCtx.unshieldedKeystore.signData(payload),
-    );
-    const finalized = await walletCtx.wallet.finalizeRecipe(recipe);
-    await walletCtx.wallet.submitTransaction(finalized);
+    let registered = false;
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+        const recipe = await walletCtx.wallet.registerNightUtxosForDustGeneration(
+          unregisteredUtxos,
+          walletCtx.unshieldedKeystore.getPublicKey(),
+          (payload) => walletCtx.unshieldedKeystore.signData(payload),
+        );
+        const finalized = await walletCtx.wallet.finalizeRecipe(recipe);
+        await walletCtx.wallet.submitTransaction(finalized);
+        registered = true;
+        break;
+      } catch (err: any) {
+        console.log(`  Registration attempt ${attempt} failed: ${err?.message || err}. Retrying in 5s...`);
+        await new Promise(r => setTimeout(r, 5000));
+      }
+    }
+    if (!registered) {
+      console.log('  ❌ Failed to register for DUST after 5 attempts. RPC might be congested.');
+      process.exit(1);
+    }
   }
 
   if (dustState.dust.balance(new Date()) === 0n) {
